@@ -75,31 +75,36 @@ int main(int argc, char** argv)
     }
 
     socklen_t socklen = sizeof(addr);
+    bool connected = false;
     int len = 0;
     char buf[1024 * 1024];
     while (true)
     {
-        len = recvfrom(udp_sock, buf, sizeof(buf), 0, (sockaddr*)&addr,
-                       &socklen);
-        if (len == -1)
+        if (!connected)
         {
-            cerr << "udp recv failed with" << strerror(errno) << endl;
-            return 2;
-        }
+            len = recvfrom(udp_sock, buf, sizeof(buf), 0, (sockaddr*)&addr,
+                           &socklen);
+            if (len == -1)
+            {
+                cerr << "udp recv failed with" << strerror(errno) << endl;
+                continue;
+            }
 
-        if (len != 4 || (memcmp(buf, "INIT", 4) != 0))
-        {
-            cerr << "udp msg invalid" << endl;
-            return 2;
-        }
+            if (len != 4 || (memcmp(buf, "INIT", 4) != 0))
+            {
+                cerr << "udp msg invalid" << endl;
+                continue;
+            }
 
-        cout << "new conn from:" << inet_ntoa(addr.sin_addr) << ":"
-             << ntohs(addr.sin_port) << endl;
-        res = connect(udp_sock, (sockaddr*)&addr, sizeof(addr));
-        if (res != 0)
-        {
-            cerr << "udp connect failed." << endl;
-            return 3;
+            cout << "new conn from:" << inet_ntoa(addr.sin_addr) << ":"
+                 << ntohs(addr.sin_port) << endl;
+            res = connect(udp_sock, (sockaddr*)&addr, sizeof(addr));
+            if (res != 0)
+            {
+                cerr << "udp connect failed." << endl;
+                continue;
+            }
+            connected = true;
         }
 
         len = (rand() % 100) + 1000;
