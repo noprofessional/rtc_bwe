@@ -11,7 +11,7 @@ client: $(OBJS)
 	g++ -o $@ $(OBJS)
 
 %.o:%.cpp %.d
-	g++ -c $< -Wall -Wextra -Werror -Wfatal-errors -MMD -MT $@ 
+	g++ -g -c $< -Wall -Wextra -Werror -Wfatal-errors -MMD -MT $@ 
 
 $(DEPS): ;
 
@@ -19,6 +19,6 @@ clean:
 	rm -rf $(OBJS) $(DEPS) client server
 
 server: server.cpp
-	g++ -o server server.cpp -Wall -Wextra -Werror -Wfatal-errors
+	g++ -g -o server server.cpp -Wall -Wextra -Werror -Wfatal-errors
 
 include $(wildcard $(DEPS))
