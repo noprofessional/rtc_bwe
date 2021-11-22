@@ -75,9 +75,10 @@ int main(int argc, char** argv)
 
         // ignore msg
         // just do statics
-        uint32_t send_time_24bits = (((uint32_t)(buf[len - 3])) << 16) |
-                                    (((uint32_t)(buf[len - 2])) << 8) |
-                                    ((uint32_t)buf[len - 1]);
+        uint32_t send_time_24bits = (((uint32_t)(uint8_t)(buf[len - 3])) << 16) |
+                                    (((uint32_t)(uint8_t)(buf[len - 2])) << 8) |
+                                    ((uint32_t)(uint8_t)buf[len - 1]);
+        cout << send_time_24bits << endl;
 
         estimator->IncomingPacketInfo(getNowMs(), send_time_24bits, len, 0);
     }
