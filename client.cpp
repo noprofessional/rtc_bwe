@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     }
 
     const char* INIT = "INIT";
-    send(udp_sock, INIT, sizeof(INIT), 0);
+    send(udp_sock, INIT, strlen(INIT), 0);
     EstimatorPtr estimator = make_unique<RemoteBitrateEstimatorAbsSendTime>();
     char buf[1024 * 1024];
     while (true)
