@@ -16,16 +16,16 @@ const uint64_t datarate = 4000000;  // 4Mbps
 const uint32_t fps = 30;            // fps
 const uint32_t scale = 3;           // I frame size scale
 
-// 8.16 fixed second
+// 6.18 fixed second
 inline void getAbsTime(uint8_t* buf)
 {
     static struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
 
-    const double nanosec2fraction = 6.5536e-5;
-    uint16_t fraction = ts.tv_nsec * nanosec2fraction;
+    const double nanosec2fraction = (double)(1 << 18) / 1000000000;
+    uint32_t fraction = ts.tv_nsec * nanosec2fraction;
 
-    buf[0] = (uint8_t)ts.tv_sec;
+    buf[0] = (((uint8_t)ts.tv_sec) & 0x3f) << 2 | ((fraction >> 16) & 0x03);
     buf[1] = (fraction >> 8) & 0xff;
     buf[2] = fraction & 0xff;
 }
