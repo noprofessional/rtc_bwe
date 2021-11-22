@@ -93,6 +93,8 @@ int main(int argc, char** argv)
             return 2;
         }
 
+        cout << "new conn from:" << inet_ntoa(addr.sin_addr) << ":"
+             << ntohs(addr.sin_port) << endl;
         res = connect(udp_sock, (sockaddr*)&addr, sizeof(addr));
         if (res != 0)
         {
