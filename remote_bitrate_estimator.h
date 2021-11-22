@@ -131,10 +131,11 @@ private:
     size_t total_probes_received_;
     std::list<Probe> probes_;
 
+    const FieldTrialBasedConfig field_trials_;
+
     std::unique_ptr<InterArrival> inter_arrival_;
     std::unique_ptr<OveruseEstimator> estimator_;
     OveruseDetector detector_;
-    const FieldTrialBasedConfig field_trials_;
 };
 
 typedef std::unique_ptr<RemoteBitrateEstimatorAbsSendTime> EstimatorPtr;

@@ -1,8 +1,8 @@
 #pragma once
 #include <assert.h>
-#include <map>
 
 #include <limits>
+#include <map>
 #define RTC_CHECK(x) assert(x)
 #define RTC_DCHECK(x) assert(x)
 #define RTC_DCHECK_GE(x, y) assert((x) > (y))
@@ -112,6 +112,7 @@ public:
 class FieldTrialBasedConfig : public WebRtcKeyValueConfig
 {
 public:
+    FieldTrialBasedConfig() : dumb(0) {}
     std::string Lookup(const std::string& key) const override
     {
         static std::map<std::string, std::string> dict{};
@@ -121,4 +122,5 @@ public:
         else
             return {};
     }
+    char dumb;
 };
