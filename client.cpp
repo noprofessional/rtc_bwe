@@ -1,6 +1,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/prctl.h>
+#include <sys/resource.h>
 #include <sys/socket.h>
 
 #include <iostream>
@@ -10,10 +12,27 @@
 
 using namespace std;
 
+void enable_core_dump()
+{
+    struct rlimit flimit;
+    flimit.rlim_cur = RLIM_INFINITY;
+    flimit.rlim_max = RLIM_INFINITY;
+
+    if (setrlimit(RLIMIT_CORE, &flimit) < 0)
+    {
+        fprintf(stderr, "setrlimit2 error\n");
+        exit(1);
+    };
+
+    prctl(PR_SET_DUMPABLE, 1);
+}
+
 int main(int argc, char** argv)
 {
     if (argc < 3)
         return 1;
+
+    enable_core_dump();
 
     int udp_sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (udp_sock == -1)

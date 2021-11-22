@@ -2,6 +2,8 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/prctl.h>
+#include <sys/resource.h>
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
@@ -28,10 +30,27 @@ inline void getAbsTime(uint8_t* buf)
     buf[2] = fraction & 0xff;
 }
 
+void enable_core_dump()
+{
+    struct rlimit flimit;
+    flimit.rlim_cur = RLIM_INFINITY;
+    flimit.rlim_max = RLIM_INFINITY;
+
+    if (setrlimit(RLIMIT_CORE, &flimit) < 0)
+    {
+        fprintf(stderr, "setrlimit2 error\n");
+        exit(1);
+    };
+
+    prctl(PR_SET_DUMPABLE, 1);
+}
+
 int main(int argc, char** argv)
 {
     if (argc < 3)
         return 1;
+
+    enable_core_dump();
 
     srand(time(nullptr));
 
@@ -86,6 +105,6 @@ int main(int argc, char** argv)
         send(udp_sock, buf, len, 0);
 
         uint32_t sleepms = 42;
-        usleep(sleepms*1000);
+        usleep(sleepms * 1000);
     }
 }
