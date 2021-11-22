@@ -96,6 +96,12 @@ void AimdRateControl::SetRtt(TimeDelta rtt) { rtt_ = rtt; }
 RemoteBitrateEstimatorAbsSendTime::RemoteBitrateEstimatorAbsSendTime()
     : incoming_bitrate_(kBitrateWindowMs, 8000),
       incoming_bitrate_initialized_(false),
+      inter_arrival_(std::make_unique<InterArrival>((kTimestampGroupLengthMs
+                                                     << kInterArrivalShift) /
+                                                        1000,
+                                                    kTimestampToMs,
+                                                    true)),
+      estimator_(std::make_unique<OveruseEstimator>(OverUseDetectorOptions())),
       detector_(&field_trials_)
 {}
 
